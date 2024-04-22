@@ -7,7 +7,11 @@
 
 import Foundation
 
+//func Q_1000 () {
+//    let result = readLine()!.split(separator: " ").map { Int(String($0))! }
+//    print(result[0] + result[1])
+//}
+
 func Q_1000 () {
-    let result = readLine()!.split(separator: " ").map { Int(String($0))! }
-    print(result[0] + result[1])
+    print(readLine()!.split(separator: " ").map { Int($0)! }.reduce(0, +))
 }
