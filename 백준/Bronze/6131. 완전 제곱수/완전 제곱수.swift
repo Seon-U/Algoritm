@@ -3,7 +3,7 @@
     
     for A in 1...500 {
         for B in 1...500 {
-            if A * A == B * B + n {
+            if (A + B) * (A - B) == n {
                 count += 1
             }
         }
