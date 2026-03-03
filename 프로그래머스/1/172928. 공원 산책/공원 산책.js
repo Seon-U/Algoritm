@@ -5,11 +5,13 @@ function solution(park, routes) {
     const mxCol = park[0].length;
     
     const isAvailable = (x, y) => {
-        if (x < 0 || y < 0 || x >= mxRow || y >= mxCol) return false;
-        if (park[x][y] === "X") return false;
-        return true;
+        if (x >= 0 && 
+            y >= 0 && 
+            x < mxRow && 
+            y < mxCol && 
+            park[x][y] != "X") return true;
+        return false; 
     }
-    
     
     for (let row = 0; row< mxRow; row++) {
         for (let col=0; col<mxCol; col++) {
@@ -21,52 +23,31 @@ function solution(park, routes) {
         }
     }
     
-    
+    const move = {
+        "E": [0, 1],
+        "W": [0, -1],
+        "N": [-1, 0],
+        "S": [1, 0]
+    }
+
     for (const route of routes) {
+        let nx = x;
+        let ny = y;
         let [direction, howfar] = route.split(" ");
         howfar = Number(howfar);
         
         let flag = 1;
-        switch (direction) {
-            case "E":
-                for (let i=1; i <= howfar; i++) {
-                    if (!isAvailable(x, y + i)) { 
-                        flag = 0;
-                        break;
-                    } 
-                }
-                y = flag ? y + howfar : y;
+        for (let i = 1; i <= howfar; i++) {
+            nx = x + move[direction][0] * i;
+            ny = y + move[direction][1] * i;
+        
+            if (!isAvailable(nx, ny)) {
+                flag = 0;
+                console.log(nx, ny, flag, i);
                 break;
-            
-            case "W":
-                for (let i=y - howfar; i < y; i++) {
-                    if (!isAvailable(x, i)) { 
-                        flag = 0;
-                        break;
-                    } 
-                }
-                y = flag ? y - howfar : y;
-                break;
-            
-            case "N":
-                for (let i=x - howfar; i < x; i++) {
-                    if (!isAvailable(i, y)) { 
-                        flag = 0;
-                        break;
-                    } 
-                }
-                x = flag ? x - howfar : x;
-                break;
-            case "S":
-                for (let i=1; i <= howfar; i++) {
-                    if (!isAvailable(x + i, y)) { 
-                        flag = 0;
-                        break;
-                    } 
-                }
-                x = flag ? x + howfar : x;
-                break;
-        }
+            } 
+        }   
+        if (!!flag) [x, y] = [nx, ny];
     }
     
     return [x, y];
