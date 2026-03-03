@@ -36,18 +36,19 @@ function solution(park, routes) {
         let [direction, howfar] = route.split(" ");
         howfar = Number(howfar);
         
+        let [dx, dy] = move[direction];
+        
         let flag = 1;
         for (let i = 1; i <= howfar; i++) {
-            nx = x + move[direction][0] * i;
-            ny = y + move[direction][1] * i;
+            nx = x + dx * i;
+            ny = y + dy * i;
         
             if (!isAvailable(nx, ny)) {
                 flag = 0;
-                console.log(nx, ny, flag, i);
                 break;
             } 
         }   
-        if (!!flag) [x, y] = [nx, ny];
+        if (flag) [x, y] = [nx, ny];
     }
     
     return [x, y];
