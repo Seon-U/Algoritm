@@ -1,49 +1,28 @@
 function solution(cost, hint) {
-    let minCost = Infinity;
-    let head = 0;
-    const queue = [{
-        c: 0,
-        r: 0,
-        h: Array(cost.length).fill(0)
-    }];
+    const n = cost.length;
+    const memo = new Map();
     
-    const visited = new Set();
-    
-    while (head < queue.length) {
-        const curr = queue[head];
-        head++;        
+    function solve(round, hints) {
+        if (round === n) return 0;
         
-        if (visited.has(`${curr.c}_${curr.r}_${curr.h.join(',')}`)) continue;
-        visited.add(`${curr.c}_${curr.r}_${curr.h.join(',')}`);
+        const key = `${round}_${hints.join(',')}`;
+        if (memo.has(key)) return memo.get(key);
         
-        if (curr.r === cost.length) {
-            minCost = Math.min(curr.c, minCost);
-            continue;
+        const usable = Math.min(hints[round], cost[round].length - 1);
+        const stageCost = cost[round][usable];
+        
+        let best = stageCost + solve(round + 1, hints);
+        
+        if (round < n - 1) {
+            const [hintCost, ...ticketNumbers] = hint[round];
+            const newHints = [...hints];
+            for (const num of ticketNumbers) newHints[num - 1]++;
+            const candidate = stageCost + hintCost + solve(round + 1, newHints);
+            best = Math.min(best, candidate);
         }
-        
-        const usable = Math.min(curr.h[curr.r], cost[curr.r].length - 1);
-        
-        const next = {
-            c: curr.c + cost[curr.r][usable],
-            r: curr.r + 1,
-            h: [...curr.h],
-        }
-        
-        queue.push(next);
-        
-        if (curr.r < cost.length - 1) {
-            const [hintCost, ...hints] = hint[curr.r];
-            const newHints = [...next.h];
-            for (const hnum of hints) newHints[hnum - 1]++;
-            
-            const next2 = {
-                c: next.c + hintCost,
-                r: next.r,
-                h: newHints
-            }
-                        
-            queue.push(next2);
-        }
+        memo.set(key, best);
+        return best;
     }
-    return minCost;
+    
+    return solve(0, Array(n).fill(0));
 }
