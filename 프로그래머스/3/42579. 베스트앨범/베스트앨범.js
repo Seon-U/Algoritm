@@ -12,7 +12,7 @@ function solution(genres, plays) {
                 secondBest: null,
             }
         } else {
-            const { _, firstBest, secondBest } = genreList[genre];
+            const { firstBest, secondBest } = genreList[genre];
             genreList[genre].total += plays[i];
             
             if (plays[i] > plays[firstBest]) {
