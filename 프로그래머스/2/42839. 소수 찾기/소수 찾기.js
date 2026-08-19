@@ -24,9 +24,11 @@ function solution(numbers) {
         const num = +queue[head][0];
         const status = queue[head][1];
         head++;
-                
-        if (!isCheckBefore.has(num) && isPrime(num)) answer++;
+        
+        if (isCheckBefore.has(num)) continue;
         isCheckBefore.add(num);
+        
+        if (isPrime(num)) answer++;
         
         if (round === numbers.length) continue;
         
