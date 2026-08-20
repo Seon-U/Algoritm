@@ -1,7 +1,3 @@
-function pass(w, h, sizes) {
-    
-}
-
 function solution(sizes) {
     let minW = 0;
     let minH = 0;
