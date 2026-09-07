@@ -1,14 +1,14 @@
 function solution(n, control) {
-    const move = (c) => {
-        switch (c) {
-            case "w": return n += 1;
-            case "s": return n -= 1;
-            case "d": return n += 10;
-            case "a": return n -= 10;
-        }
+    const op = {
+        "w": 1,
+        "s": -1,
+        "d": 10,
+        "a": -10,
     }
     
-    [...control].forEach(move);
+    for (const ch of control) {
+        n += op[ch];
+    }
         
     return n;
 }
