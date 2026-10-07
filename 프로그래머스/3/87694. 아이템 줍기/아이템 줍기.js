@@ -1,61 +1,66 @@
-function solution(rectangle, characterX, characterY, itemX, itemY) {
-    //1 ~ 50 까지 경우 2배 확대
-    const SIZE = 102;
+// console.log(MAP.map(v => v.join('')).join('\n')); use it for test
+
+const DIRECTIONS = [
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1]
+];
+
+
+function solution(rectangle, characterX, characterY, itemX, itemY, result) {
     
-    const map = Array.from({length: SIZE}, () => new Array(SIZE).fill(0));
+    const SAFEN = 102;
     
+    const MAP = Array.from({length: SAFEN}, () => Array(SAFEN).fill(0));
+    
+    // 사각형 영역 1로 채우기 (중복도 1로 처리됨)
     for (const [lx, ly, rx, ry] of rectangle) {
-        for (let x = lx * 2; x <= rx * 2; x++) {
-            for (let y = ly * 2; y <= ry * 2; y++) {
-                map[y][x] = 1;
+        // 두 배 처리하기
+        const drx = rx * 2;
+        const dry = ry * 2;
+        for (let x = lx * 2; x <= drx; x++) {
+            for (let y = ly * 2; y <= dry; y++) {
+                MAP[y][x] = 1;
             }
-        }
+        }    
     }
     
+    // 1 인 영역 중 테두리 안쪽을 전부 0으로 바꾸기 (중복 영역 관계 없이 제거)
     for (const [lx, ly, rx, ry] of rectangle) {
-        for (let x = lx * 2 + 1; x < rx * 2; x++) {
-            for (let y = ly * 2 + 1; y < ry * 2; y++) {
-                map[y][x] = 0;
+        const drx = rx * 2;
+        const dry = ry * 2;
+        for (let x = lx * 2 + 1; x < drx; x++) {
+            for (let y = ly * 2 + 1; y < dry; y++) {
+                MAP[y][x] = 0;
             }
-        }
+        }    
     }
+
     
-    
-    const startX = characterX * 2;
-    const startY = characterY * 2;
-    const targetX = itemX * 2;
-    const targetY = itemY * 2;
-    
-    const queue = [[startX, startY, 0]];
+    const queue = [[characterX * 2, characterY * 2, 0]];
     let head = 0;
     
-    const visited = Array.from({length: SIZE}, () => new Array(SIZE).fill(false));
-    
-    const directions = [
-        [1, 0],
-        [-1,0],
-        [0, 1],
-        [0, -1]
-    ];
-    
     while (head < queue.length) {
-        const [x, y, distance] = queue[head++];
+        const [currX, currY, distance] = queue[head++];
         
-        if (x === targetX && y === targetY) return distance / 2;
+        //visited 처리
+        MAP[currY][currX] = 0;
         
-        for (const [dx, dy] of directions) {
-            const nx = x + dx;
-            const ny = y + dy;
+        if (currX === itemX * 2 && currY === itemY * 2) return Math.floor(distance / 2);
         
-            if (nx < 0 || nx >= SIZE || ny < 0 || ny >= SIZE) continue;
+        for (const [dx, dy] of DIRECTIONS) {
+            const [newX, newY] = [currX + dx, currY + dy];
             
-            if (map[ny][nx] !== 1 || visited[ny][nx]) continue;
+            if (newX < 0 || newX > SAFEN ) continue;
+            if (newY < 0 || newY > SAFEN ) continue;
             
-            visited[ny][nx] = true;
-            queue.push([nx, ny, distance + 1]);
+            if (MAP[newY][newX] !== 1) continue;
+           
+            queue.push([newX, newY, distance + 1]);
         }
     }
     
-    return 0;
-    
+    //ERROR
+    return -1;
 }
